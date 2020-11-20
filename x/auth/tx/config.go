@@ -57,6 +57,9 @@ func (g config) TxEncoder() sdk.TxEncoder {
 }
 
 func (g config) TxDecoder() sdk.TxDecoder {
+	fmt.Println("***********")
+	fmt.Println("x/auth/tx/config.go 1")
+	fmt.Println("***********")
 	return g.decoder
 }
 

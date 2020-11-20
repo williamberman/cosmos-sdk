@@ -71,14 +71,27 @@ func (pc *ProtoCodec) MustMarshalBinaryLengthPrefixed(o ProtoMarshaler) []byte {
 
 // UnmarshalBinaryBare implements BinaryMarshaler.UnmarshalBinaryBare method.
 func (pc *ProtoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
+	fmt.Println("****************")
+	fmt.Println("codec/proto_codec.go")
+	fmt.Println("****************")
 	err := ptr.Unmarshal(bz)
 	if err != nil {
 		return err
 	}
+	fmt.Println("****************")
+	// %!v(PANIC=String method: reflect.Value.Interface: cannot return value obtained from unexported field or method)
+	fmt.Println(ptr)
+	fmt.Println("****************")
 	err = types.UnpackInterfaces(ptr, pc.interfaceRegistry)
 	if err != nil {
 		return err
 	}
+	fmt.Println("****************")
+	fmt.Println(ptr)
+	fmt.Println("****************")
+	fmt.Println("****************")
+	fmt.Println("codec/proto_codec.go end")
+	fmt.Println("****************")
 	return nil
 }
 

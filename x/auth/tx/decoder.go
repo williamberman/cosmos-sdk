@@ -1,6 +1,7 @@
 package tx
 
 import (
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/unknownproto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,6 +12,9 @@ import (
 // DefaultTxDecoder returns a default protobuf TxDecoder using the provided Marshaler.
 func DefaultTxDecoder(cdc codec.ProtoCodecMarshaler) sdk.TxDecoder {
 	return func(txBytes []byte) (sdk.Tx, error) {
+		fmt.Println("***************")
+		fmt.Println("x/auth/tx/decoder.go 1")
+		fmt.Println("***************")
 		var raw tx.TxRaw
 
 		// reject all unknown proto fields in the root TxRaw
@@ -26,11 +30,24 @@ func DefaultTxDecoder(cdc codec.ProtoCodecMarshaler) sdk.TxDecoder {
 
 		var body tx.TxBody
 
+		fmt.Println("***************")
+		fmt.Println("x/auth/tx/decoder.go string(raw.BodyBytes)")
+		fmt.Println(len(raw.BodyBytes))
+		fmt.Println(string(raw.BodyBytes))
+		fmt.Println("***************")
+
 		// allow non-critical unknown fields in TxBody
 		txBodyHasUnknownNonCriticals, err := unknownproto.RejectUnknownFields(raw.BodyBytes, &body, true, cdc.InterfaceRegistry())
 		if err != nil {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, err.Error())
 		}
+		
+		fmt.Println("***************")
+		fmt.Println("x/auth/tx/decoder.go string(raw.BodyBytes) 1")
+		fmt.Println(len(raw.BodyBytes))
+		fmt.Println(txBodyHasUnknownNonCriticals)
+		fmt.Println(string(raw.BodyBytes))
+		fmt.Println("***************")
 
 		err = cdc.UnmarshalBinaryBare(raw.BodyBytes, &body)
 		if err != nil {
@@ -56,12 +73,20 @@ func DefaultTxDecoder(cdc codec.ProtoCodecMarshaler) sdk.TxDecoder {
 			Signatures: raw.Signatures,
 		}
 
-		return &wrapper{
+		rv := &wrapper{
 			tx:                           theTx,
 			bodyBz:                       raw.BodyBytes,
 			authInfoBz:                   raw.AuthInfoBytes,
 			txBodyHasUnknownNonCriticals: txBodyHasUnknownNonCriticals,
-		}, nil
+		}
+
+		fmt.Println("***************")
+		fmt.Println("x/auth/tx/decoder.go rv.tx.GetMsgs()")
+		fmt.Println(rv)
+		fmt.Println(rv.tx.GetMsgs())
+		fmt.Println("***************")
+
+		return rv, nil
 	}
 }
 

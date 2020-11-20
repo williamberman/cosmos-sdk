@@ -12,6 +12,10 @@ import (
 
 // ConvertTxToStdTx converts a transaction to the legacy StdTx format
 func ConvertTxToStdTx(codec *codec.LegacyAmino, tx signing.Tx) (legacytx.StdTx, error) {
+	fmt.Println("****************")
+	fmt.Println("client/tx/legacy.go 1")
+	fmt.Println(tx.GetMsgs())
+	fmt.Println("****************")
 	if stdTx, ok := tx.(legacytx.StdTx); ok {
 		return stdTx, nil
 	}
@@ -29,6 +33,11 @@ func ConvertTxToStdTx(codec *codec.LegacyAmino, tx signing.Tx) (legacytx.StdTx, 
 	if !ok {
 		return legacytx.StdTx{}, fmt.Errorf("expected %T, got %+v", legacytx.StdTx{}, builder.GetTx())
 	}
+
+	fmt.Println("****************")
+	fmt.Println("client/tx/legacy.go 2")
+	fmt.Println(stdTx)
+	fmt.Println("****************")
 
 	return stdTx, nil
 }

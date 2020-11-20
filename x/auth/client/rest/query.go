@@ -172,13 +172,32 @@ func packStdTxResponse(w http.ResponseWriter, clientCtx client.Context, txRes *s
 	// We just unmarshalled from Tendermint, we take the proto Tx's raw
 	// bytes, and convert them into a StdTx to be displayed.
 	txBytes := txRes.Tx.Value
+	fmt.Println("*******************")
+	fmt.Println("Before convert")
+	fmt.Println(txBytes)
+	fmt.Println("*******************")
 	stdTx, err := convertToStdTx(w, clientCtx, txBytes)
+	fmt.Println("*******************")
+	fmt.Println("after convert")
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
+	fmt.Println("*******************")
+	
+	fmt.Println("*******************")
+	fmt.Println("Before pack")
+	fmt.Println(stdTx)
+	fmt.Println("*******************")
 
 	// Pack the amino stdTx into the TxResponse's Any.
 	txRes.Tx = codectypes.UnsafePackAny(stdTx)
+
+	
+	fmt.Println("*******************")
+	fmt.Println("After pack")
+	fmt.Println(txRes.Tx)
+	fmt.Println("*******************")
 
 	return nil
 }

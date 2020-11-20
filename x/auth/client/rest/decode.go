@@ -64,20 +64,37 @@ func DecodeTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 // successfully converted or not.
 func convertToStdTx(w http.ResponseWriter, clientCtx client.Context, txBytes []byte) (legacytx.StdTx, error) {
 	txI, err := clientCtx.TxConfig.TxDecoder()(txBytes)
+	fmt.Println("*******************")
+	fmt.Println("txI")
+	fmt.Println(txI)
+	fmt.Println("*******************")
 	if rest.CheckBadRequestError(w, err) {
 		return legacytx.StdTx{}, err
 	}
 
 	tx, ok := txI.(signing.Tx)
+	fmt.Println("*******************")
+	fmt.Println("tx")
+	fmt.Println(tx)
+	fmt.Println(tx.GetPubKeys())
+	fmt.Println("*******************")
 	if !ok {
 		rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("%+v is not backwards compatible with %T", tx, legacytx.StdTx{}))
 		return legacytx.StdTx{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", (signing.Tx)(nil), txI)
 	}
 
 	stdTx, err := clienttx.ConvertTxToStdTx(clientCtx.LegacyAmino, tx)
+	fmt.Println("*******************")
+	fmt.Println("stdTx")
+	fmt.Println(stdTx)
+	fmt.Println("*******************")
 	if rest.CheckBadRequestError(w, err) {
 		return legacytx.StdTx{}, err
 	}
+	
+	fmt.Println("*******************")
+	fmt.Println("No bad request error")
+	fmt.Println("*******************")
 
 	return stdTx, nil
 }

@@ -114,6 +114,9 @@ func (s StdTxConfig) TxEncoder() sdk.TxEncoder {
 }
 
 func (s StdTxConfig) TxDecoder() sdk.TxDecoder {
+	fmt.Println("**************")
+	fmt.Println("stdtx_builder.go 1")
+	fmt.Println("**************")
 	return mkDecoder(s.Cdc.UnmarshalBinaryBare)
 }
 
@@ -188,6 +191,9 @@ func SignatureV2ToStdSignature(cdc *codec.LegacyAmino, sig signing.SignatureV2) 
 type Unmarshaler func(bytes []byte, ptr interface{}) error
 
 func mkDecoder(unmarshaler Unmarshaler) sdk.TxDecoder {
+	fmt.Println("**************")
+	fmt.Println("stdtx_builder.go 2")
+	fmt.Println("**************")
 	return func(txBytes []byte) (sdk.Tx, error) {
 		if len(txBytes) == 0 {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "tx bytes are empty")
@@ -199,6 +205,10 @@ func mkDecoder(unmarshaler Unmarshaler) sdk.TxDecoder {
 		if err != nil {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, err.Error())
 		}
+		fmt.Println("**************")
+		fmt.Println("stdtx_builder.go 3")
+		fmt.Println(tx)
+		fmt.Println("**************")
 		return tx, nil
 	}
 }
